@@ -1,10 +1,23 @@
-const axios = require('axios');
+const express = require('express');
+const http = require ('http');
+const socketIo = require('socket.io');
 
-axios.get('https://api.spotify.com/v1/search?q=vitas 2002&type=track', {
-    headers: {
-    'Authorization': 'Bearer BQBy2oX92EH0rAySf39UMOTrSx_iS0zVqkIk85eVNx4BUtPrEkPrbxAGKvQ9yHFcEHjAyrcvJ0ac71pSmf435TtwppVpsJV5niyd-xhnglrIPx1BHM7rkNioQla1dqlAUxqhaQeMEliOrDEv-e-CVfEwWEnKZ4pDS0SC-PxXYwEITq_gqAKWFQB9rGBjkwQcaUu4zskUp1Ue-xdA-2Q'
-}
-}).then((data)=>{
-    console.log(data.data.tracks.items[0].id);
-})
+const app = express();
+const server = http.createServer(app);
+const io= socketIo(server);
+
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+});
+
+io.on('connection', (socket) =>{
+
+    socket.on('message', (message)=>{
+        io.emit('message', message);
+    });
+});
+
+server.listen(3000, ()=>{
+    console.log('Server is running on http://localhost:3000');
+});
 
